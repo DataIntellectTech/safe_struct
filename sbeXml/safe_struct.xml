@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbe:messageSchema xmlns:sbe="http://fixprotocol.io/2016/sbe"
+                   xmlns:xi="http://www.w3.org/2001/XInclude"
+                   package="di"
+                   id="1"
+                   version="1"
+                   semanticVersion="5.2"
+                   description="SBE schema for safe struct blog"
+                   byteOrder="littleEndian">
+    <types>
+        <composite name="messageHeader" description="Message identifiers and length of message root.">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="templateId" primitiveType="uint16"/>
+            <type name="schemaId" primitiveType="uint16"/>
+            <type name="version" primitiveType="uint16"/>
+        </composite>
+        <composite name="KycLevel">
+            <enum name="KycLevelType" encodingType="uint8">
+                <validValue name="invalid">0</validValue>
+                <validValue name="idVerified">1</validValue>
+                <validValue name="addressVerified">2</validValue>
+            </enum>
+        </composite>
+        <composite name="participant" description="Participant part of Account">
+            <type name="participantId" primitiveType="int64"/>
+            <ref name="kycLevel" type="KycLevel"/>
+        </composite>
+        <composite name="AccountStatus">
+            <enum name="AccountStatusType" encodingType="uint8">
+                <validValue name="invalid">0</validValue>
+                <validValue name="active">1</validValue>
+                <validValue name="inactive">2</validValue>
+            </enum>
+        </composite>
+        <composite name="groupSizeEncoding" description="Number of tags">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="numInGroup" primitiveType="uint16"/>
+        </composite>
+        <composite name="varStringEncoding" description="Safe struct tag">
+            <type name="length" primitiveType="uint32" maxValue="1073741824"/>
+            <type name="varData" primitiveType="uint8" length="0" characterEncoding="UTF-8"/>
+        </composite>
+        <composite name="SelfTradingRule">
+            <enum name="SelfTradingRuleType" encodingType="uint8">
+                <validValue name="invalid">0</validValue>
+                <validValue name="valid">1</validValue>
+            </enum>
+        </composite>
+        <composite name="CancellationPolicy">
+            <enum name="CancellationPolicyType" encodingType="uint8">
+                <validValue name="invalid">0</validValue>
+                <validValue name="valid">1</validValue>
+            </enum>
+        </composite>
+    </types>
+    <sbe:message name="Account" id="1" description="Safe struct account base message">
+        <field name="sequencingId" id="1" type="int64"/>
+        <field name="accountId" id="2" type="int64"/>
+        <field name="participant" id="3" type="participant"/>
+        <field name="accountStatus" id="4" type="AccountStatus"/>
+        <field name="selfTradingRule" id="5" type="SelfTradingRule"/>
+        <field name="cancellationPolicy" id="6" type="CancellationPolicy"/>
+        <group name="tags" id="7" dimensionType="groupSizeEncoding">
+            <data name="tag" id="200" type="varStringEncoding"/>
+        </group>
+    </sbe:message>
+</sbe:messageSchema>
+
