@@ -9,6 +9,13 @@
 #include <iostream>
 #include <fstream>
 
+/*
+* NOTE: Initial testing relied on chrono runtime functionality to measure performance, but it proved to be inaccurate -
+*       likely due to external factors such as resource scheduling, OS context switching, and caching. To explore this
+*       approach, RUN_TIMED_TEST and FINISHED_TIMED_TEST macros were introduced. However, they are now redundant, as I
+*       found callgrind to provide more accurate and reproducable results. These macros remain in the code only to
+*       indicate that this method was considered.
+*/
 #define RUN_TIMED_TEST  fin.clear(); \
                         fin.seekg(0);\
                         auto start_time{ std::chrono::system_clock::now() }
